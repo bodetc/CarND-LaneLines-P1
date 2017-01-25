@@ -1,6 +1,6 @@
 import cv2
-from sklearn import linear_model
 import numpy as np
+from sklearn import linear_model
 
 
 def draw_regression_line(img, image_settings, x, y, color=[255, 0, 0], thickness=2):

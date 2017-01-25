@@ -35,7 +35,7 @@ def default_settings():
     return high_threshold, kernel_size, low_threshold, max_line_gap, min_line_length, rho, theta, threshold
 
 
-def process_image(image, image_settings=ImageSettings(), extrapolation=False):
+def process_image(image, image_settings=ImageSettings(), extrapolation=True):
     # Get settings
     high_threshold, kernel_size, low_threshold, max_line_gap, min_line_length, rho, theta, threshold = default_settings()
 
