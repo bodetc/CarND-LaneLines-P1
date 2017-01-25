@@ -1,7 +1,8 @@
-import interpolation
 from tools import *
+from extrapolation import hough_with_interpolation
 
 
+# Settings of the image and of the masked edges
 class ImageSettings:
     width = 960
     height = 540
@@ -18,6 +19,7 @@ class ImageSettings:
             dtype=np.int32)
 
 
+# Settings of the transformation
 def default_settings():
     # Kernel size of Gaussian Smoothing
     kernel_size = 3
@@ -33,8 +35,10 @@ def default_settings():
     return high_threshold, kernel_size, low_threshold, max_line_gap, min_line_length, rho, theta, threshold
 
 
-def process_image(image, image_settings=ImageSettings(), interpolation = False):
+def process_image(image, image_settings=ImageSettings(), extrapolation=False):
+    # Get settings
     high_threshold, kernel_size, low_threshold, max_line_gap, min_line_length, rho, theta, threshold = default_settings()
+
     # Transform to Grayscale
     gray = grayscale(image)
 
@@ -44,14 +48,16 @@ def process_image(image, image_settings=ImageSettings(), interpolation = False):
     # Apply Canny transformation
     edges = canny(blur_gray, low_threshold, high_threshold)
 
-    # Next we'll create a masked edges image using cv2.fillPoly()
+    # Create a masked edges image
     vertices = image_settings.getVertices()
     masked_edges = region_of_interest(edges, vertices)
 
-    # Run Hough on edge detected image
-    if(interpolation):
-        hough = interpolation.hough_with_interpolation(masked_edges, rho, theta, threshold, min_line_length, max_line_gap, image_settings)
+    if (extrapolation):
+        # Run Hough on edge detected image and reduce to the left and right lanes
+        hough = hough_with_interpolation(masked_edges, rho, theta, threshold, min_line_length, max_line_gap,
+                                         image_settings)
     else:
+        # Run Hough on edge detected image
         hough = hough_lines(masked_edges, rho, theta, threshold, min_line_length, max_line_gap)
 
     processed_image = weighted_img(hough, image)

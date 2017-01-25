@@ -27,7 +27,7 @@ def process_challenge(image):
     settings.center = 780
     settings.mask_top_width = 50
 
-    return process_image(image, image_settings=settings, interpolation=False)
+    return process_image(image, image_settings=settings, extrapolation=False)
 
 
 yellow_output = 'zuper.mp4'

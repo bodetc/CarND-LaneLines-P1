@@ -2,16 +2,20 @@ import cv2
 from sklearn import linear_model
 import numpy as np
 
+
 def draw_regression_line(img, image_settings, x, y, color=[255, 0, 0], thickness=2):
+    # Make a regression to get the average of all lines on one side
     regression = linear_model.LinearRegression()
     regression.fit(y, x)
 
+    # Get the end points of the extrapolated line
     y_max = image_settings.height
     x_max = regression.predict(y_max)
 
     y_min = image_settings.mask_height
     x_min = regression.predict(y_min)
 
+    # Plot it
     cv2.line(img, (x_min, y_min), (x_max, y_max), color, thickness)
 
 
@@ -23,6 +27,9 @@ def draw_long_lines(img, image_settings, lines, color=[255, 0, 0], thickness=2):
 
     center = image_settings.center
 
+    # Split between left and right lane lines using position
+    # I did not use slope here as there are some small lines detected with the wrong slope detect on each side
+    # of the image
     for line in lines:
         for x1, y1, x2, y2 in line:
             if x1 < center and x2 < center:
@@ -37,7 +44,8 @@ def draw_long_lines(img, image_settings, lines, color=[255, 0, 0], thickness=2):
                 right_x.append(x2)
                 right_y.append([y2])
 
-    if len(left_x)>0:
+    # Plot the regression lines
+    if len(left_x) > 0:
         draw_regression_line(img, image_settings, left_x, left_y, color, thickness)
 
     if len(right_x) > 0:

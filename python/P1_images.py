@@ -4,14 +4,14 @@ import matplotlib.image as mpimg
 from process_image import process_image
 
 import os
-os.listdir("test_images/")
 
-# TODO: Build your pipeline that will draw lane lines on the test_images
-# then save them to the test_images directory.
+os.listdir("test_images/")
 
 for imFile in os.listdir("test_images/"):
     print('Reading file:' + imFile)
-    image=mpimg.imread("test_images/"+imFile)
+    image = mpimg.imread("test_images/" + imFile)
     print('This image is:', type(image), 'with dimensions:', image.shape)
+    line_image = process_image(image, extrapolation=False)
+    mpimg.imsave("test_images/processed_" + imFile, line_image)
     processed_image = process_image(image)
-    mpimg.imsave("test_images_processed/"+imFile, processed_image)
+    mpimg.imsave("test_images/processed_" + imFile, processed_image)
